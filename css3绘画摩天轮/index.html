@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>css3摩天轮-B5教程网</title>
+		<style>
+			*{margin:0;padding:0;box-sizing:border-box;}
+			ul{list-style:none;}
+			html,body,#skywheel{width:100%;height:100%;overflow:hidden;}
+			#skywheel{padding:3px;background-color:orange;background-image:linear-gradient(top,skyblue 90%, orange 90%);background-image:-o-linear-gradient(top,skyblue 90%, orange 90%);background-image:-ms-linear-gradient(top,skyblue 90%, orange 90%);background-image:-moz-linear-gradient(top,skyblue 90%, orange 90%);background-image:-webkit-linear-gradient(top,skyblue 90%, orange 90%);}
+			#skywheel:before,#skywheel:after{z-index:1;background-color:lightcoral;transform-origin:0 15%;content:"";display:block;position:absolute;width:25px;height:calc(100% - 55%);bottom:10%;}
+			#skywheel:before{left:calc(50% - 25px);transform:skew(-15deg);}
+			#skywheel:after{left:50%;transform:skew(15deg);}
+			#skywheel ul{position:relative;border-radius:50%;margin:auto;width:75%;height:75%;bottom:-10%;animation:wheel 10s linear 1s infinite;-webkit-animation:wheel 10s linear 1s infinite;}
+			#skywheel ul:after{z-index:2;background-color:lightcoral;box-shadow:0 0 3px black;display:block;position:absolute;content:"";width:50px;height:50px;border-radius:50%;top:calc(50% - 25px);left:calc(50% - 25px);}
+			#skywheel ul li{overflow:hidden;margin:-5px 0 0 calc(-50% / 10);width:calc(100% / 10);height:calc(100% / 12);border:solid 3px red;border-radius:50%;position:absolute;top:0;left:0;transform-origin:center 5px;animation:car 10s linear 1s infinite;-webkit-animation:car 10s linear 1s infinite;background-image:linear-gradient(top, red 15%, transparent 15%, transparent 55%, red 55%);background-image:-o-linear-gradient(top, red 15%, transparent 15%, transparent 55%, red 55%);background-image:-ms-linear-gradient(top, red 15%, transparent 15%, transparent 55%, red 55%);background-image:-moz-linear-gradient(top, red 15%, transparent 15%, transparent 55%, red 55%);background-image:-webkit-linear-gradient(top, red 15%, transparent 15%, transparent 55%, red 55%);}
+			#skywheel ul li:nth-of-type(3n){border-color:green;background-image:linear-gradient(top, green 15%, transparent 15%, transparent 55%, green 55%);background-image:-o-linear-gradient(top, green 15%, transparent 15%, transparent 55%, green 55%);background-image:-ms-linear-gradient(top, green 15%, transparent 15%, transparent 55%, green 55%);background-image:-moz-linear-gradient(top, green 15%, transparent 15%, transparent 55%, green 55%);background-image:-webkit-linear-gradient(top, green 15%, transparent 15%, transparent 55%, green 55%);}
+			#skywheel ul li:nth-of-type(3n-1){border-color:yellow;background-image:linear-gradient(top, yellow 15%, transparent 15%, transparent 55%, yellow 55%);background-image:-o-linear-gradient(top, yellow 15%, transparent 15%, transparent 55%, yellow 55%);background-image:-ms-linear-gradient(top, yellow 15%, transparent 15%, transparent 55%, yellow 55%);background-image:-moz-linear-gradient(top, yellow 15%, transparent 15%, transparent 55%, yellow 55%);background-image:-webkit-linear-gradient(top, yellow 15%, transparent 15%, transparent 55%, yellow 55%);}
+			#skywheel ul li:after{content:"";display:block;width:1px;height:80%;margin:calc(15% - 4px) auto 0;border:solid 2px red;background-color:snow;}
+			#skywheel ul li:nth-of-type(3n):after{border-color:green;}
+			#skywheel ul li:nth-of-type(3n-1):after{border-color:yellow;}
+			@keyframes wheel{
+		        0%     {transform:rotate(0deg);}
+		        100%   {transform:rotate(360deg);}
+		    }
+		    @-webkit-keyframes wheel{
+		        0%     {transform:rotate(0deg);}
+		        100%   {transform:rotate(360deg);}
+		    }
+		    @keyframes car{
+		        0%     {transform:rotate(0deg);}
+		        100%   {transform:rotate(-360deg);}
+		    }
+		    @-webkit-keyframes car{
+		        0%     {transform:rotate(0deg);}
+		        100%   {transform:rotate(-360deg);}
+		    }
+		</style>
+		<script type="text/javascript" src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+		<script type="text/javascript">
+			$(function(){
+				var radius = function(init){
+					var num = 24;
+					var deg = 360 / num;
+					var o = $("#skywheel ul").removeAttr("style");
+					var w = o.width();
+					var h = o.height();
+					var d = w < h ? w : h;
+					o.width(d);
+					o.height(d);
+					
+					var hack = ["","-o-","-ms-","-moz-","-webkit-"];
+					$.each(hack, function(i,n){
+						var bgStr = "";
+                        var str = "";
+						$.each(new Array(num/2),function(j){
+							if(str) str += ",";
+							str += n + "linear-gradient(" + (j*deg) + "deg, transparent 49.65%, snow 49.9%, snow 50.1%, transparent 50.35%)";	
+						});
+						bgStr = n + "radial-gradient(center,transparent 30%, snow 30%, snow 31.5%, transparent 31.5%, transparent 57.5%, snow 57.5%, snow 59%, transparent 59%)";
+						o.css({"background-image":str + "," + bgStr});
+					});
+					
+					$.each(new Array(num),function(i){
+						var r = d / 2;
+						var x = r;
+						var y = r;
+						var a = deg * i;
+						var x1 = x + r * Math.sin(a * Math.PI / 180);
+						var y2 = y - r * Math.cos(a * Math.PI / 180);
+						console.log(init)
+						obj = init ? o.find("li").eq(i) : $("<li>").appendTo(o);
+						obj.css({top:y2,left:x1})
+					})
+				}
+				$(window).resize(radius);
+				radius();
+			})
+		</script>
+	</head>
+	<body>
+		<div id="skywheel">
+			<ul></ul>
+		</div>
+	</body>
+</html>
