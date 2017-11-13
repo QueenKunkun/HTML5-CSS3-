@@ -1,0 +1,156 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>奔跑者-B5教程网</title>
+</head>
+<body>
+<header>
+</header>
+<style>
+ul#bcty365_nav{padding-left:50px; margin-bottom:10px; border-bottom:2px solid #ccc; overflow:hidden; _zoom:1;}
+ul#bcty365_nav li{float:left; display:inline; margin:10px;}
+ul#bcty365_nav li a{display:block;color:#000000; font-size:16px;}
+ul#bcty365_nav li a,#wimoban_p,#wimoban_p a{ font-family:"微软雅黑";}
+ul#bcty365_nav li a:hover,#wimoban_p a:hover{color:red;}
+</style>
+<canvas id="canvas" width="400" height="400"></canvas>
+<script>
+zweiRunMan = (function () {
+    function ZweiPart(width, height) {
+        this.x = 0;
+        this.y = 0;
+        this.width = width;
+        this.height = height;
+        this.rotation = 0;
+        this.scaleX = 1;
+        this.scaleY = 1;
+        this.lineWidth = 1;
+    }
+ 
+    ZweiPart.prototype.draw = function (context) {
+        var h = this.height,
+            d = this.width + h, //top-right diagonal
+            cr = h / 2;         //corner radius
+        context.save();
+        context.translate(this.x, this.y);
+        context.rotate(this.rotation);
+        context.scale(this.scaleX, this.scaleY);
+        context.lineWidth = this.lineWidth;
+        context.fillStyle = "#fff";
+        context.beginPath();
+        context.moveTo(0, -cr);
+        context.lineTo(d - 2 * cr, -cr);
+        context.quadraticCurveTo(-cr + d, -cr, -cr + d, 0);
+        context.lineTo(-cr + d, h - 2 * cr);
+        context.quadraticCurveTo(-cr + d, -cr + h, d - 2 * cr, -cr + h);
+        context.lineTo(0, -cr + h);
+        context.quadraticCurveTo(-cr, -cr + h, -cr, h - 2 * cr);
+        context.lineTo(-cr, 0);
+        context.quadraticCurveTo(-cr, -cr, 0, -cr);
+        context.closePath();
+        context.fill();
+        if (this.lineWidth > 0) {
+            context.stroke();
+        }
+ 
+ 
+        context.beginPath();
+        context.arc(0, 0, 2, 0, (Math.PI * 2), true);
+        context.closePath();
+        context.stroke();
+ 
+        context.beginPath();
+        context.arc(this.width, 0, 2, 0, (Math.PI * 2), true);
+        context.closePath();
+        context.stroke();
+ 
+        context.restore();
+    };
+ 
+    ZweiPart.prototype.getPin = function () {
+        return {
+            x: this.x + Math.cos(this.rotation) * this.width,
+            y: this.y + Math.sin(this.rotation) * this.width
+        };
+    };
+ 
+ 
+    return function (h, w) {
+        return new ZweiPart(h, w);
+    };
+}());
+</script>
+<script>
+    window.onload = function () {
+        var canvas = document.getElementById('canvas'),
+                ctx = canvas.getContext('2d'),
+                leg = zweiRunMan(40, 30),
+                calf = zweiRunMan(40, 20),
+                leg2 = zweiRunMan(40, 30),
+                calf2 = zweiRunMan(40, 20),
+                body = zweiRunMan(50, 30),
+                arm = zweiRunMan(30, 15),
+                arm1 = zweiRunMan(30, 15),
+                arm2 = zweiRunMan(30, 15),
+                arm3 = zweiRunMan(30, 15),
+ 
+ 
+                cycle = 90,
+                offset = -Math.PI / 2; //should be between PI and -PI
+ 
+        leg.x = 200;
+        leg.y = 200;
+        leg2.x = 200;
+        leg2.y = 200;
+        body.x = 200;
+        body.y = 200;
+        body.rotation = -80 * Math.PI / 180;
+        arm.x = 210;
+        arm.y = 150;
+        arm2.x = 210;
+        arm2.y = 150;
+ 
+        function runleg(segA, segB, cyc) {
+            segA.rotation = (Math.sin(cyc) * 45 + 90) * Math.PI / 180;
+            segB.rotation = segA.rotation + (Math.sin(cyc + offset) * 45 + 45) * Math.PI / 180;
+            segB.x = segA.getPin().x;
+            segB.y = segA.getPin().y;
+        }
+ 
+        function runarm(segA, segB, cyc) {
+            segA.rotation = (Math.sin(cyc) * 55 + 90) * Math.PI / 180;
+            segB.rotation = segA.rotation - (Math.sin(cyc + offset) * 45 + 45) * Math.PI / 180;
+            segB.x = segA.getPin().x;
+            segB.y = segA.getPin().y;
+        }
+ 
+        (function drawFrame() {
+            window.requestAnimationFrame(drawFrame, canvas);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+ 
+            cycle += 0.06;
+            runleg(leg, calf, cycle);
+            runleg(leg2, calf2, cycle + Math.PI);
+            runarm(arm, arm1, cycle + Math.PI);
+            runarm(arm2, arm3, cycle );
+ 
+ 
+            leg2.draw(ctx);
+            calf2.draw(ctx);
+            arm2.draw(ctx);
+            arm3.draw(ctx);
+            body.draw(ctx);
+            leg.draw(ctx);
+            calf.draw(ctx);
+            arm.draw(ctx);
+            arm1.draw(ctx);
+ 
+        }());
+    };
+	
+	
+	
+</script>
+</body>
+</html>
