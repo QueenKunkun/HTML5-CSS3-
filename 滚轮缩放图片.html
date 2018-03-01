@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<script> 
+			function onWheelZoom(obj){ 
+		        zoom = parseFloat(obj.style.zoom); 
+		        tZoom = zoom + (event.wheelDelta>0 ? 0.05 : -0.05); 
+		        if( tZoom > 1 || tZoom<0.1 ) return true; 
+		        obj.style.zoom=tZoom; 
+		        return false; 
+			} 
+		</script> 
+	</head>
+	<body>
+		<a href="javascript:window.close()">
+			<img src="http://files.jb51.net/file_images/article/201311/20131120101711.png" style="zoom:1;"
+			onmousewheel='return onWheelZoom(this)'>
+		</a>
+	</body>
+</html>
